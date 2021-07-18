@@ -18,7 +18,6 @@
         /// <inheritdoc cref="IRepository{TEntity}"/>
         public async Task AddAsync(ParagraphEntity paragraphEntity)
         {
-            paragraphEntity.Id = ObjectId.GenerateNewId().ToString();
             await _dbContext.Paragraphs.InsertOneAsync(paragraphEntity);
         }
 
@@ -35,7 +34,7 @@
             return await _dbContext.Paragraphs.Find(_ => _.Id.Equals(id)).SingleOrDefaultAsync();
         }
 
-        public async Task<List<ParagraphEntity>> GetListAsync()
+        public async Task<List<ParagraphEntity>> GetAllAsync()
         {
             return await _dbContext.Paragraphs.Find(_ => true).ToListAsync();
         }

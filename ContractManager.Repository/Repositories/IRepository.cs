@@ -39,6 +39,6 @@
         /// 
         /// </summary>
         /// <returns></returns>
-        Task<List<TEntity>> GetListAsync();
+        Task<List<TEntity>> GetAllAsync();
     }
 }
