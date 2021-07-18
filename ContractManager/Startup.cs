@@ -12,9 +12,10 @@ namespace ContractManager
     using ContractManager.Repository;
     using ContractManager.Repository.Entities;
     using ContractManager.Repository.Repositories;
-    using ContractManager.Validators;
     using ContractManager.ViewModels.Paragraphs;
     using ModelConstants = ContractManager.Models.Constants;
+    using Microsoft.AspNetCore.Localization;
+    using System.Globalization;
 
     public class Startup
     {
@@ -28,6 +29,8 @@ namespace ContractManager
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddLocalization(options => options.ResourcesPath = "Resources");
+
             services.AddControllersWithViews();
 
             services.AddSingleton<IMongoClient>(
@@ -40,9 +43,6 @@ namespace ContractManager
             // services
             services.AddScoped<IRepository<ParagraphEntity>, ParagraphRepository>();
             services.AddScoped<IParagraphService, ParagraphService>();
-
-            // validators
-            services.AddScoped<IValidator<ParagraphVM>, ParagraphValidator>();
 
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
         }
@@ -72,6 +72,24 @@ namespace ContractManager
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
+            });
+
+            SetupSupportedCultures(app);
+        }
+
+        private void SetupSupportedCultures(IApplicationBuilder app)
+        {
+            var supportedCultures = new[]
+{
+                new CultureInfo("en-US")
+            };
+            app.UseRequestLocalization(new RequestLocalizationOptions
+            {
+                DefaultRequestCulture = new RequestCulture("en-US"),
+                // Formatting numbers, dates, etc.
+                SupportedCultures = supportedCultures,
+                // UI strings that we have localized.
+                SupportedUICultures = supportedCultures
             });
         }
     }
