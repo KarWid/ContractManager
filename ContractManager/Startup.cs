@@ -1,16 +1,19 @@
 namespace ContractManager
 {
-    using ContractManager.Common.Services;
-    using ContractManager.Repository;
-    using ContractManager.Repository.Entities;
-    using ContractManager.Repository.Repositories;
+    using System;
+    using FluentValidation;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
     using MongoDB.Driver;
-    using System;
+    using ContractManager.Common.Services;
+    using ContractManager.Repository;
+    using ContractManager.Repository.Entities;
+    using ContractManager.Repository.Repositories;
+    using ContractManager.Validators;
+    using ContractManager.ViewModels.Paragraphs;
     using ModelConstants = ContractManager.Models.Constants;
 
     public class Startup
@@ -37,6 +40,9 @@ namespace ContractManager
             // services
             services.AddScoped<IRepository<ParagraphEntity>, ParagraphRepository>();
             services.AddScoped<IParagraphService, ParagraphService>();
+
+            // validators
+            services.AddScoped<IValidator<ParagraphVM>, ParagraphValidator>();
 
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
         }
