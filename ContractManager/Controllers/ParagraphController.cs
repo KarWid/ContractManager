@@ -1,29 +1,27 @@
 ﻿namespace ContractManager.Controllers
 {
-    using AutoMapper;
+    using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
-    using FluentValidation;
+    using AutoMapper;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Logging;
     using ContractManager.Common.Models;
     using ContractManager.Common.Services;
     using ContractManager.ViewModels.Paragraphs;
+    using ContractManager.Enums;
+    using ContractManager.Models;
 
     public class ParagraphController : BaseController
     {
-        private readonly ILogger<ParagraphController> _logger;
         private readonly IMapper _mapper;
         private readonly IParagraphService _paragraphService;
-        private readonly IValidator<ParagraphVM> _paragraphValidator;
 
         public ParagraphController(ILogger<ParagraphController> logger, IMapper mapper, 
-            IParagraphService paragraphService, IValidator<ParagraphVM> paragraphValidator)
+            IParagraphService paragraphService) : base(logger)
         {
-            _logger = logger;
             _mapper = mapper;
             _paragraphService = paragraphService;
-            _paragraphValidator = paragraphValidator;
         }
 
         public async Task<IActionResult> Index()
@@ -35,55 +33,111 @@
 
         public async Task<IActionResult> Get(string id)
         {
-            var paragraph = await _paragraphService.GetAsync(id);
-            var result = _mapper.Map<ParagraphVM>(paragraph);
+            try 
+            {
+                var paragraph = await _paragraphService.GetAsync(id);
+                var result = _mapper.Map<ParagraphVM>(paragraph);
+                return View("View", result);
+            }
+            catch(Exception ex)
+            {
+                HandleException(ex, null, "Paragraph - Get");
+            }
 
-            return View("View", result);
+            return RedirectToAction("Index");
+        }
+
+        [HttpGet]
+        public IActionResult Add()
+        {
+            ViewData[Constants.ViewData.ACTION] = "Add";
+            return View("Edit", new ParagraphVM());
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Add(ParagraphVM viewModel)
         {
-            var validationResult = _paragraphValidator.Validate(viewModel);
-            if (!validationResult.IsValid)
+            if (!ModelState.IsValid)
             {
-                // TODO KWidla: add a comment to display for user
-                return View("View");
+                ViewData[Constants.ViewData.ACTION] = "Add";
+                return View("Edit", viewModel);
             }
 
-            var paragraph = _mapper.Map<Paragraph>(viewModel);
-            var newParagraph = await _paragraphService.AddAsync(paragraph);
-            var result = _mapper.Map<ParagraphVM>(newParagraph);
+            try
+            {
+                var paragraph = _mapper.Map<Paragraph>(viewModel);
+                var newParagraph = await _paragraphService.AddAsync(paragraph);
+                var result = _mapper.Map<ParagraphVM>(newParagraph);
+                AddUiMessage("Paragraph successfully created.", UiMessageStatusType.Success);
+                return View("View", result);
+            }
+            catch (Exception ex)
+            {
+                HandleException(ex, null, "Paragraph - Add");
+            }
 
-            return View("View", result);
+            return View("Edit", viewModel);
         }
 
         [HttpGet]
         public async Task<IActionResult> Edit(string id)
         {
-            var paragraph = await _paragraphService.GetAsync(id);
-            var result = _mapper.Map<ParagraphVM>(paragraph);
+            try
+            {
+                var paragraph = await _paragraphService.GetAsync(id);
+                var result = _mapper.Map<ParagraphVM>(paragraph);
 
-            return View("Edit", result);
+                ViewData[Constants.ViewData.ACTION] = "Edit";
+                return View("Edit", result);
+            }
+            catch (Exception ex)
+            {
+                HandleException(ex, null, "Paragraph - Get");
+            }
+
+            return RedirectToAction("Index");
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(ParagraphVM viewModel)
         {
-            var paragraph = _mapper.Map<Paragraph>(viewModel);
-            var newParagraph = await _paragraphService.EditAsync(paragraph);
-            var result = _mapper.Map<ParagraphVM>(newParagraph);
+            if(!ModelState.IsValid)
+            {
+                ViewData[Constants.ViewData.ACTION] = "Edit";
+                return View("Edit", viewModel);
+            }
 
-            return View("View", result);
+            try
+            {
+                var paragraph = _mapper.Map<Paragraph>(viewModel);
+                var newParagraph = await _paragraphService.EditAsync(paragraph);
+                var result = _mapper.Map<ParagraphVM>(newParagraph);
+                AddUiMessage("Paragraph successfully updated.", UiMessageStatusType.Success);
+                return View("View", result);
+            }
+            catch (Exception ex)
+            {
+                HandleException(ex, null, "Paragraph - Add");
+            }
+
+            return View("Edit", viewModel);
         }
 
-        [HttpDelete]
         public async Task<IActionResult> Delete(string id)
         {
             var result = await _paragraphService.DeleteAsync(id);
-            ViewBag.IsElementSuccessfullyDeleted = result;
+
+            if (result)
+            {
+                AddUiMessage("Paragraph successfully removed.", UiMessageStatusType.Success);
+            }
+            else
+            {
+                AddUiMessage("Paragraph was not removed.", UiMessageStatusType.Error);
+            }
+
             return RedirectToAction("Index");
         }
     }

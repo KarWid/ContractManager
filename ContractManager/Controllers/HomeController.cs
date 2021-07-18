@@ -12,12 +12,10 @@
 
     public class HomeController : BaseController
     {
-        private readonly ILogger<HomeController> _logger;
         private readonly IParagraphService _paragraphService;
 
-        public HomeController(ILogger<HomeController> logger, IParagraphService paragraphService)
+        public HomeController(ILogger<HomeController> logger, IParagraphService paragraphService) :base(logger)
         {
-            _logger = logger;
             _paragraphService = paragraphService;
         }
 
