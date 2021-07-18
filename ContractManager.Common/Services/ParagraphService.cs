@@ -6,6 +6,7 @@
     using ContractManager.Common.Models;
     using ContractManager.Repository.Entities;
     using ContractManager.Repository.Repositories;
+    using MongoDB.Bson;
 
     public interface IParagraphService
     {
@@ -13,7 +14,7 @@
         Task<Paragraph> AddAsync(Paragraph model);
         Task<Paragraph> EditAsync(Paragraph model);
         Task<bool> DeleteAsync(string id);
-        Task<List<Paragraph>> GetListAsync();
+        Task<List<Paragraph>> GetAllAsync();
     }
     public class ParagraphService : IParagraphService
     {
@@ -35,6 +36,8 @@
         public async Task<Paragraph> AddAsync(Paragraph model)
         {
             var newEntity = _mapper.Map<ParagraphEntity>(model);
+
+            newEntity.Id = ObjectId.GenerateNewId().ToString();
             await _paragraphRepository.AddAsync(newEntity);
             
             return _mapper.Map<Paragraph>(newEntity);
@@ -47,17 +50,17 @@
 
         public async Task<Paragraph> EditAsync(Paragraph model)
         {
+            // TODO @KWidla: some validation
+
             var updatedEntity = _mapper.Map<ParagraphEntity>(model);
             var result = await _paragraphRepository.ReplaceAsync(updatedEntity);
-
-            // TODO @KWidla: some validation
 
             return _mapper.Map<Paragraph>(updatedEntity);
         }
 
-        public async Task<List<Paragraph>> GetListAsync()
+        public async Task<List<Paragraph>> GetAllAsync()
         {
-            var list = await _paragraphRepository.GetListAsync();
+            var list = await _paragraphRepository.GetAllAsync();
             return _mapper.Map<List<Paragraph>>(list);
         }
     }

@@ -7,7 +7,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ContractManager", "Contract
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ContractManager.Repository", "ContractManager.Repository\ContractManager.Repository.csproj", "{4085D45E-AF76-4932-86CB-6D1B0206F7A9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContractManager.Common", "ContractManager.Common\ContractManager.Common.csproj", "{0DEB5636-BB20-4F31-B19D-B2C2ADC47E23}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ContractManager.Common", "ContractManager.Common\ContractManager.Common.csproj", "{0DEB5636-BB20-4F31-B19D-B2C2ADC47E23}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContractManager.Common.Tests", "ContractManager.Common.Tests\ContractManager.Common.Tests.csproj", "{10BD68A4-3D40-45B7-BC18-835714CCE6F7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +29,10 @@ Global
 		{0DEB5636-BB20-4F31-B19D-B2C2ADC47E23}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0DEB5636-BB20-4F31-B19D-B2C2ADC47E23}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0DEB5636-BB20-4F31-B19D-B2C2ADC47E23}.Release|Any CPU.Build.0 = Release|Any CPU
+		{10BD68A4-3D40-45B7-BC18-835714CCE6F7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{10BD68A4-3D40-45B7-BC18-835714CCE6F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{10BD68A4-3D40-45B7-BC18-835714CCE6F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{10BD68A4-3D40-45B7-BC18-835714CCE6F7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
