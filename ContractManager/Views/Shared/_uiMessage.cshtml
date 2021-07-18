@@ -1,31 +1,28 @@
 ﻿@using ContractManager.Enums;
+@using Newtonsoft.Json;
 
-@{ 
-    UiMessage uiMessage = null;
+
+@{
     string cssClass = string.Empty;
-    var uiMessages = TempData[Constants.TempData.UI_MESSAGES];
-    if (uiMessages != null)
+    var uiMessages = JsonConvert.DeserializeObject<List<UiMessage>>((TempData[Constants.TempData.UI_MESSAGES] as string) ?? string.Empty);
+    var uiMessage = uiMessages?.OrderBy(_ => _.Status)?.FirstOrDefault();
+    if (uiMessage != null)
     {
-        uiMessage = (TempData[Constants.TempData.UI_MESSAGES] as List<UiMessage>)?.OrderBy(_ => _.Status).FirstOrDefault();
-        if (uiMessage != null)
+        switch (uiMessage.Status)
         {
-            switch (uiMessage.Status)
-            {
-                case UiMessageStatusType.Info:
-                    cssClass = "alert alert-info";
-                    break;
-                case UiMessageStatusType.Warning:
-                    cssClass = "alert alert-warning";
-                    break;
-                case UiMessageStatusType.Error:
-                    cssClass = "alert alert-danger";
-                    break;
-                case UiMessageStatusType.Success:
-                    cssClass = "alert alert-success";
-                    break;
-            }
+            case UiMessageStatusType.Info:
+                cssClass = "alert alert-info";
+                break;
+            case UiMessageStatusType.Warning:
+                cssClass = "alert alert-warning";
+                break;
+            case UiMessageStatusType.Error:
+                cssClass = "alert alert-danger";
+                break;
+            case UiMessageStatusType.Success:
+                cssClass = "alert alert-success";
+                break;
         }
-
     }
 }
 
