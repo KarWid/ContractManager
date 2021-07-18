@@ -2,10 +2,11 @@
 {
     using System;
     using System.Collections.Generic;
-    using ContractManager.Enums;
-    using ContractManager.Models;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Logging;
+    using Newtonsoft.Json;
+    using ContractManager.Enums;
+    using ContractManager.Models;
 
     public class BaseController : Controller
     {
@@ -18,12 +19,12 @@
 
         protected void AddUiMessage(string message, UiMessageStatusType status)
         {
-            var uiMessages = TempData[Constants.TempData.UI_MESSAGES] as List<UiMessage>;
+            var uiMessages = JsonConvert.DeserializeObject<List<UiMessage>>((string)TempData[Constants.TempData.UI_MESSAGES] ?? string.Empty);
             if (uiMessages == null)
             {
                 uiMessages = new List<UiMessage>();
                 uiMessages.Add(new UiMessage(message, status));
-                TempData["UiMessages"] = uiMessages;
+                TempData[Constants.TempData.UI_MESSAGES] = JsonConvert.SerializeObject(uiMessages);
                 return;
             }
 
