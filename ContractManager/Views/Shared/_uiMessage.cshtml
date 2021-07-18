@@ -1,0 +1,37 @@
+﻿@using ContractManager.Enums;
+
+@{ 
+    UiMessage uiMessage = null;
+    string cssClass = string.Empty;
+    var uiMessages = TempData[Constants.TempData.UI_MESSAGES];
+    if (uiMessages != null)
+    {
+        uiMessage = (TempData[Constants.TempData.UI_MESSAGES] as List<UiMessage>)?.OrderBy(_ => _.Status).FirstOrDefault();
+        if (uiMessage != null)
+        {
+            switch (uiMessage.Status)
+            {
+                case UiMessageStatusType.Info:
+                    cssClass = "alert alert-info";
+                    break;
+                case UiMessageStatusType.Warning:
+                    cssClass = "alert alert-warning";
+                    break;
+                case UiMessageStatusType.Error:
+                    cssClass = "alert alert-danger";
+                    break;
+                case UiMessageStatusType.Success:
+                    cssClass = "alert alert-success";
+                    break;
+            }
+        }
+
+    }
+}
+
+@if (uiMessage != null)
+{
+    <div class="@cssClass">
+        <label>@uiMessage.Message</label>
+    </div>
+}
